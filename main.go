@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"sync"
 )
 
@@ -13,19 +14,12 @@ func mylog(sts ...interface{}) {
 	}
 }
 
-
-
 func checkDir(dirPath string) {
-	mylog("now is : ", dirPath, " moved to the location! ")
-	os.Chdir(dirPath)
-	listupDir, _ := ioutil.ReadDir(".")
-
-	for _, f := range listupDir {
-		mylog("  listup: f: ", absPath(f.Name()))
-	}
+	mylog("now is : ", dirPath)
+	listupDir, _ := ioutil.ReadDir(absPath(dirPath))
 
 	for _, filesIn := range listupDir {
-		absP := absPath(filesIn.Name())
+		absP := filepath.Join(dirPath, filesIn.Name())
 
 		if filesIn.IsDir() == false {
 			continue
@@ -36,7 +30,7 @@ func checkDir(dirPath string) {
 			continue
 		}
 
-		var wg = &sync.WaitGroup{}
+		wg := &sync.WaitGroup{}
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -49,6 +43,6 @@ func checkDir(dirPath string) {
 
 func main() {
 	mylog("--- before checkdir")
-	checkDir(".")
+	checkDir(absPath("."))
 	mylog("--- after  checkdir")
 }
