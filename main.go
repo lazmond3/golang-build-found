@@ -25,8 +25,12 @@ func checkDir(dirPath string) {
 			continue
 		}
 
-		if filesIn.Name() == "build" {
+		if filesIn.Name() == "build" || filesIn.Name() == "node_modules" {
 			println("FOUND BUILD!: ", absP)
+			if len(os.Args) > 0 && os.Args[1] == "delete" {
+				os.RemoveAll(absP)
+			}
+
 			continue
 		}
 
